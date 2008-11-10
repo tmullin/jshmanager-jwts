@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import jshm.Config;
+import jshm.JSHManager;
+import jshm.util.Util;
 import jshm.wts.gui.GUI;
 
 import org.jdesktop.swingx.JXErrorPane;
@@ -22,6 +24,47 @@ import org.jdesktop.swingx.error.ErrorInfo;
  *
  */
 public class JWTSubmitter {
+	public static class Version {
+		public static final String NAME = "JWTSubmitter";
+		public static final int MAJOR = 0;
+		public static final int MINOR = 0;
+		public static final int POINT = 1;
+		public static final boolean IS_BETA = true;
+		
+		public static final String
+		MIN_JSHM_VERSION = "0.2.4",
+		VERSION =
+			String.format("%s.%s.%s", MAJOR, MINOR, POINT),
+		STRING =
+			String.format("%s%s", VERSION, IS_BETA ? " beta" : "");
+		
+		public static final String LAST = "0.0.0";
+		public static final int LAST_REVISION = 0;
+		
+		public static final java.util.Date DATE = initDate("$Date: 2008-11-02 19:04:24 -0500 (Sun, 02 Nov 2008) $");
+		public static final int REVISION = initRevision("$Revision: 260 $");
+		
+		private static java.util.Date initDate(final String _APP_DATE) {
+			try {
+				// $Date: 2008-11-02 19:04:24 -0500 (Sun, 02 Nov 2008) $
+				return new java.text.SimpleDateFormat("$'Date': yyyy-MM-dd HH:mm:ss Z (EE, dd MMM yyyy) $")
+					.parse(_APP_DATE);
+			} catch (java.text.ParseException e) {}
+			
+			return new java.util.Date();
+		}
+			
+		private static int initRevision(final String _APP_REVISION) {
+			try {
+				// $Revision: 260 $
+				return Integer.parseInt(_APP_REVISION.replaceAll("[^\\d]+", ""));
+			} catch (NumberFormatException e) {}
+			
+			return 0;
+		}
+	}
+	
+	
 	static final Logger LOG = Logger.getLogger(JWTSubmitter.class.getName());
 	static GUI gui = null;
 	
@@ -37,7 +80,9 @@ public class JWTSubmitter {
 					LOG.log(Level.WARNING, "Exception in thread \"" + thread.getName() + "\"", thrown);
 				}
 			});
-				
+			
+			checkJSHMVersion();
+			
 			for (String dir : new String[] {"logs", "wts"}) {
 				File f = new File("data/" + dir);
 				if (f.exists()) continue;
@@ -129,5 +174,17 @@ public class JWTSubmitter {
 		}
 		
 		System.exit(exitCode);
+	}
+	
+	
+	static void checkJSHMVersion() {
+		if (Util.versionCompare(JSHManager.Version.VERSION, Version.MIN_JSHM_VERSION) < 0) {
+			JOptionPane.showMessageDialog(null,
+				"JWTSubmitter requires JSHManager " +
+				Version.MIN_JSHM_VERSION + " but only " +
+				JSHManager.Version.VERSION + " was found.\n" +
+				"Please update to the latest version of JSHMangaer.", "Error", JOptionPane.ERROR_MESSAGE);
+			System.exit(-4);
+		}
 	}
 }

@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -67,6 +68,8 @@ public class GUI extends javax.swing.JFrame {
     	GuiUtil.init();
     	
         initComponents();
+        
+        setTitle("");
         
         textFileViewer = new TextFileViewerDialog(this, true);
         
@@ -212,6 +215,13 @@ public class GUI extends javax.swing.JFrame {
     	return true;
     }
     
+    @Override
+    public void setTitle(String title) {
+    	super.setTitle(
+    		(title.isEmpty() ? "" : title + " - ") +
+    		JWTSubmitter.Version.NAME + " " + JWTSubmitter.Version.STRING);
+    }
+    
 	@Override
     public void dispose() {    	
 		autoSaveTimer.cancel();
@@ -288,6 +298,8 @@ public class GUI extends javax.swing.JFrame {
         viewLogMenu = new javax.swing.JMenu();
         uploadLogsMenuItem = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JSeparator();
+        jSeparator5 = new javax.swing.JSeparator();
+        aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("JWTSubmitter");
@@ -435,6 +447,17 @@ public class GUI extends javax.swing.JFrame {
         initViewLogMenu();
 
         helpMenu.add(viewLogMenu);
+        helpMenu.add(jSeparator5);
+
+        aboutMenuItem.setIcon(new javax.swing.ImageIcon(JSHManager.class.getResource("/jshm/resources/images/toolbar/infoabout32.png")));
+        aboutMenuItem.setMnemonic('A');
+        aboutMenuItem.setText("About");
+        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutMenuItemActionPerformed(evt);
+            }
+        });
+        helpMenu.add(aboutMenuItem);
 
         jMenuBar1.add(helpMenu);
 
@@ -644,6 +667,24 @@ private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 	}
 }//GEN-LAST:event_saveMenuItemActionPerformed
 
+private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
+	JOptionPane.showMessageDialog(this,
+		String.format(
+			"JWTSubmitter by Tim Mullin (DarylZero)\n\n" +
+			"Version: %s\n" + 
+			"Date: %s\n" +
+			"Revision: %s\n\n" +
+			"Using JSHManager %s",
+			JWTSubmitter.Version.VERSION,
+			new SimpleDateFormat("EE, dd MMM yyyy HH:mm:ss")
+				.format(JWTSubmitter.Version.DATE),
+			JWTSubmitter.Version.REVISION,
+			JSHManager.Version.VERSION
+		),
+		"About",
+		JOptionPane.INFORMATION_MESSAGE);
+}//GEN-LAST:event_aboutMenuItemActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -656,6 +697,7 @@ private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem addScoreMenuItem;
     private javax.swing.JMenuItem csvImportMenuItem;
     private javax.swing.JMenuItem deleteSelectedScoresMenuItem;
@@ -673,6 +715,7 @@ private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
     private javax.swing.JComboBox platformCombo;
     private javax.swing.JMenuItem saveMenuItem;
     private org.jdesktop.swingx.JXTable table;
