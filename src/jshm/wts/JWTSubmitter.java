@@ -41,12 +41,12 @@ public class JWTSubmitter {
 		public static final String LAST = "0.0.0";
 		public static final int LAST_REVISION = 0;
 		
-		public static final java.util.Date DATE = initDate("$Date: 2008-11-02 19:04:24 -0500 (Sun, 02 Nov 2008) $");
-		public static final int REVISION = initRevision("$Revision: 260 $");
+		public static final java.util.Date DATE = initDate("$Date$");
+		public static final int REVISION = initRevision("$Revision$");
 		
 		private static java.util.Date initDate(final String _APP_DATE) {
 			try {
-				// $Date: 2008-11-02 19:04:24 -0500 (Sun, 02 Nov 2008) $
+				// $Date$
 				return new java.text.SimpleDateFormat("$'Date': yyyy-MM-dd HH:mm:ss Z (EE, dd MMM yyyy) $")
 					.parse(_APP_DATE);
 			} catch (java.text.ParseException e) {}
@@ -56,7 +56,7 @@ public class JWTSubmitter {
 			
 		private static int initRevision(final String _APP_REVISION) {
 			try {
-				// $Revision: 260 $
+				// $Revision$
 				return Integer.parseInt(_APP_REVISION.replaceAll("[^\\d]+", ""));
 			} catch (NumberFormatException e) {}
 			
