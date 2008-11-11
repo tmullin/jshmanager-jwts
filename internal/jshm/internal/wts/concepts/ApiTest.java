@@ -1,4 +1,4 @@
-package jshm.wts.concepts;
+package jshm.internal.wts.concepts;
 
 import jshm.Difficulty;
 import jshm.Platform;

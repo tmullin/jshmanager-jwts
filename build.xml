@@ -3,9 +3,19 @@
 <!-- some examples of how to customize the build. -->
 <!-- (If you delete it and reopen the project it will be recreated.) -->
 <project name="JWTSubmitter" default="default" basedir=".">
-    <description>Builds, tests, and runs the project JWTSubmitter.</description>
-    <import file="nbproject/build-impl.xml"/>
-    <!--
+	<description>Builds, tests, and runs the project JWTSubmitter.</description>
+	<import file="nbproject/build-impl.xml"/>
+
+	<target name="jwts-version">
+		<taskdef name="jwtsinfo" classname="jshm.internal.tasks.JwtsVersion" classpath="${build.classes.dir}" />
+		<jwtsinfo />
+	</target>
+	
+	<target name="-post-jar" depends="jwts-version">
+		<move tofile="${dist.dir}/${jwts.name}_v${jwts.version}.jar" file="${dist.jar}"/>
+	</target>
+
+	<!--
 
     There exist several targets which are by default empty and which can be 
     used for execution of your tasks. These targets are usually executed 

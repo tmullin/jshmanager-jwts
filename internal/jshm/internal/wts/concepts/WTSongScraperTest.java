@@ -1,4 +1,4 @@
-package jshm.wts.concepts;
+package jshm.internal.wts.concepts;
 
 import java.util.List;
 
