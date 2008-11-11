@@ -12,7 +12,7 @@
 	</target>
 	
 	<target name="-post-jar" depends="jwts-version">
-		<move tofile="${dist.dir}/${jwts.name}_v${jwts.version}.jar" file="${dist.jar}"/>
+		<move tofile="${dist.dir}/${jwts.name}-${jwts.version}.jar" file="${dist.jar}"/>
 	</target>
 
 	<!--

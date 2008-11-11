@@ -21,7 +21,7 @@ import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * @author Tim Mullin
- *
+ * 
  */
 public class JWTSubmitter {
 	public static class Version {
