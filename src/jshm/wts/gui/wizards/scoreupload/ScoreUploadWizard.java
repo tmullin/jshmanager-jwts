@@ -126,7 +126,7 @@ public class ScoreUploadWizard {
 						curIndex, scoreCount);
 					
 					try {
-						Api.submitWTScore(s);
+						Api.submitWTScore(gui.getCurrentGame(), s);
 						gui.removeScores(i);
 					} catch (Exception e) {
 						notUploaded++;

@@ -12,6 +12,7 @@ import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.table.TableCellEditor;
 
+import jshm.wts.WTGame;
 import jshm.wts.WTSong;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -20,14 +21,15 @@ import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 public class SongCellEditor extends AbstractCellEditor implements TableCellEditor {
 	static SongCellEditor instance = null;
 	
-	public static SongCellEditor getInstance() {
+	public static SongCellEditor getInstance(WTGame game) {
 		if (null == instance)
-			instance = new SongCellEditor();
+			instance = new SongCellEditor(game);
 		return instance;
 	}
 	
-	public static void updateSongs() {
-		createSongCombo(getInstance().combo, WTSong.getList());
+	public static void updateSongs(WTGame game) {
+		if (null == game) return;
+		createSongCombo(getInstance(game).combo, WTSong.getList(game));
 	}
 	
 	public static final String SELECT_A_SONG = "Type a song name...";
@@ -72,8 +74,9 @@ public class SongCellEditor extends AbstractCellEditor implements TableCellEdito
 	
 	JComboBox combo = new JComboBox();
 	
-	private SongCellEditor() {
-		createSongCombo(combo, WTSong.getList());
+	private SongCellEditor(WTGame game) {
+		if (null == game) return;
+		createSongCombo(combo, WTSong.getList(game));
 	}
 	
 	@Override

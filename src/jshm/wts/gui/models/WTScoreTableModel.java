@@ -11,6 +11,7 @@ import java.util.*;
 
 import jshm.Difficulty;
 import jshm.Platform;
+import jshm.wts.gui.GUI;
 import jshm.wts.gui.editors.*;
 import jshm.wts.gui.renderers.*;
 import jshm.wts.Instrument;
@@ -18,12 +19,13 @@ import jshm.wts.WTScore;
 import jshm.wts.WTSong;
 
 public class WTScoreTableModel extends AbstractTableModel {
+	GUI gui = null;
 	JXTable parent = null;
 	List<WTScore> scores = new ArrayList<WTScore>();
 	
-	public void setParent(JXTable parent) {
+	public void setParent(GUI gui, JXTable parent) {
 		this.parent = parent;
-		SongCellEditor.updateSongs();
+		SongCellEditor.updateSongs(gui.getCurrentGame());
 		
 		parent.setHighlighters(
 			HighlighterFactory.createSimpleStriping(),
@@ -35,7 +37,7 @@ public class WTScoreTableModel extends AbstractTableModel {
 		cols.getColumn(1).setCellEditor(new InstrumentEditor());
 		cols.getColumn(2).setCellEditor(new DifficultyEditor());
 		cols.getColumn(3).setCellRenderer(new WTSongCellRenderer());
-		cols.getColumn(3).setCellEditor(SongCellEditor.getInstance());
+		cols.getColumn(3).setCellEditor(SongCellEditor.getInstance(gui.getCurrentGame()));
 		cols.getColumn(5).setCellRenderer(new RatingRenderer());
 		cols.getColumn(5).setCellEditor(new RatingEditor());
 	}

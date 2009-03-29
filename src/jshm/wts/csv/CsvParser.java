@@ -32,6 +32,7 @@ import jshm.Platform;
 import jshm.exceptions.CsvException;
 import jshm.util.PhpUtil;
 import jshm.wts.Instrument;
+import jshm.wts.WTGame;
 import jshm.wts.WTScore;
 import jshm.wts.WTSong;
 
@@ -41,6 +42,9 @@ public class CsvParser {
 	};
 	
 	static final Logger LOG = Logger.getLogger(CsvParser.class.getName());
+	
+	// TODO GH_M support
+	static final WTGame curGame = WTGame.GH_WT;
 	
 	public static List<WTScore> parse(final File csvFile, CsvColumn[] columns, Platform plat, Instrument inst, Difficulty diff, Instrument defaultDrums) throws Exception {
 		return parse(null, csvFile, columns, plat, inst, diff, defaultDrums);
@@ -160,7 +164,7 @@ public class CsvParser {
 				String songStr = line[col].trim();
 				
 				if (!songStr.isEmpty()) {
-					List<WTSong> songs = WTSong.findByTitle(songStr);
+					List<WTSong> songs = WTSong.findByTitle(curGame, songStr);
 					
 					// since we're in this position, the csv file /must/ specify
 					// a song, if no match is found then we can't use the last
@@ -354,7 +358,7 @@ SongCheckSwitch:
 				
 				try {
 					WTScore score =
-						new WTScore(curPlat, curDiff, curSong,curGroup, curScore, curRating, curPercent, curStreak, curComment, curImageUrl, curVideoUrl);
+						new WTScore(curGame, curPlat, curDiff, curSong,curGroup, curScore, curRating, curPercent, curStreak, curComment, curImageUrl, curVideoUrl);
 					scores.add(score);
 				} catch (IllegalArgumentException e) {
 					String s = String.format("Skipped line %s, invalid value: \"%s\"", lineNumber, e.toString());

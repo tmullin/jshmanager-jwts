@@ -7,29 +7,32 @@ import jshm.sh.RbPlatform;
 public class URLs {
 	public static final String
 	MANAGE_SCORES = jshm.sh.URLs.BASE +
-		"/manage_scores.php?group=7&game=%s&platform=%s&size=1&inst=%s&diff=%s&team=0",
+		"/manage_scores.php?group=%s&game=%s&platform=%s&size=1&inst=%s&diff=%s&team=0",
 	TOP_SCORES = jshm.sh.URLs.BASE + 
-		"/top_scores.php?group=7&game=%s&platform=%s&size=1&inst=%s&diff=%s&team=0",
+		"/top_scores.php?group=%s&game=%s&platform=%s&size=1&inst=%s&diff=%s&team=0",
 	INSERT_SCORE = jshm.sh.URLs.BASE +
-		"/insert_score.php?group=7&game=%s&platform=%s&size=1&inst=%s&diff=%s&song=%s&team=0')"
+		"/insert_score.php?group=%s&game=%s&platform=%s&size=1&inst=%s&diff=%s&song=%s&team=0')"
 	;
 	
-	public static String getManageScoresUrl(Platform plat, Instrument inst, Difficulty diff) {
+	public static String getManageScoresUrl(WTGame game, Platform plat, Instrument inst, Difficulty diff) {
 		return String.format(MANAGE_SCORES,
-			WTGame.getId(plat), RbPlatform.getId(plat), inst.scoreHeroId, diff.scoreHeroId);
+			game.scoreHeroGroupId,
+			game.getId(plat), RbPlatform.getId(plat), inst.scoreHeroId, diff.scoreHeroId);
 	}
 	
-	public static String getTopScoresUrl(Platform plat, Instrument inst, Difficulty diff) {
+	public static String getTopScoresUrl(WTGame game, Platform plat, Instrument inst, Difficulty diff) {
 		return String.format(TOP_SCORES,
-			WTGame.getId(plat), RbPlatform.getId(plat), inst.scoreHeroId, diff.scoreHeroId);
+			game.scoreHeroGroupId,
+			game.getId(plat), RbPlatform.getId(plat), inst.scoreHeroId, diff.scoreHeroId);
 	}
 	
-	public static String getInsertScoreUrl(WTScore score) {
-		return getInsertScoreUrl(score.getPlatform(), score.getInstrument(), score.getDifficulty(), score.getSong());
+	public static String getInsertScoreUrl(WTGame game, WTScore score) {
+		return getInsertScoreUrl(game, score.getPlatform(), score.getInstrument(), score.getDifficulty(), score.getSong());
 	}
 	
-	public static String getInsertScoreUrl(Platform plat, Instrument inst, Difficulty diff, WTSong song) {
+	public static String getInsertScoreUrl(WTGame game, Platform plat, Instrument inst, Difficulty diff, WTSong song) {
 		return String.format(INSERT_SCORE,
-			WTGame.getId(plat), RbPlatform.getId(plat), inst.scoreHeroId, diff.scoreHeroId, song.scoreHeroId);
+			game.scoreHeroGroupId,
+			game.getId(plat), RbPlatform.getId(plat), inst.scoreHeroId, diff.scoreHeroId, song.scoreHeroId);
 	}
 }

@@ -8,10 +8,12 @@ import java.util.logging.Logger;
 public class WTSong implements Comparable<WTSong>, Serializable {
 	static final Logger LOG = Logger.getLogger(WTSong.class.getName());
 	
+	public final WTGame game;
 	public final int scoreHeroId;
 	public final String title;
 		
-	public WTSong(int scoreHeroId, String title) {
+	public WTSong(WTGame game, int scoreHeroId, String title) {
+		this.game = game;
 		this.scoreHeroId = scoreHeroId;
 		this.title = title;
 		
@@ -20,7 +22,7 @@ public class WTSong implements Comparable<WTSong>, Serializable {
 	
 	@Override
 	public String toString() {
-		return scoreHeroId + "|" + title;
+		return game + "|" + scoreHeroId + "|" + title;
 	}
 	
 	@Override
@@ -34,30 +36,47 @@ public class WTSong implements Comparable<WTSong>, Serializable {
 //	private static final Object LOCK = "";
 	
 	public static final File CACHE_FILE = new File("data/wts/songs.cache");
-	static Map<Integer, WTSong> map = new HashMap<Integer, WTSong>(100);
-	static List<WTSong> list = new ArrayList<WTSong>(100);
+	static Map<WTGame, Map<Integer, WTSong>> map =
+		new HashMap<WTGame, Map<Integer, WTSong>>(2);
+	static Map<WTGame, List<WTSong>> list =
+		new HashMap<WTGame, List<WTSong>>(2);
 	
-	private static void add(WTSong song) {
-		map.put(song.scoreHeroId, song);
-		list.add(song);
-		Collections.sort(list);
+	static {
+		clear();
 	}
 	
-	public static WTSong getById(int scoreHeroId) {
-		return map.get(scoreHeroId);
+	private static void add(WTSong song) {
+		map.get(song.game)
+			.put(song.scoreHeroId, song);
+		list.get(song.game)
+			.add(song);
+		Collections.sort(
+			list.get(song.game));
+	}
+	
+	public static WTSong getById(WTGame game, int scoreHeroId) {
+		return map.get(game).get(scoreHeroId);
 	}
 	
 	/**
 	 * 
 	 * @return A {@link List} of all WTSongs sorted by title
 	 */
-	public static List<WTSong> getList() {
-		return list;
+	public static List<WTSong> getList(WTGame game) {
+		return list.get(game);
 	}
 	
 	public static void clear() {
 		map.clear();
 		list.clear();
+		
+		clear(WTGame.GH_WT);
+		clear(WTGame.GH_M);
+	}
+	
+	public static void clear(WTGame game) {
+		map.put(game, new HashMap<Integer, WTSong>(100));
+		list.put(game, new ArrayList<WTSong>(100));
 	}
 	
 	public static void save() {
@@ -68,9 +87,11 @@ public class WTSong implements Comparable<WTSong>, Serializable {
 		try {
 			out = new BufferedWriter(new FileWriter(CACHE_FILE));
 		
-			for (WTSong s : list) {
-				out.write(s.toString());
-				out.newLine();
+			for (Object key : list.keySet()) {
+				for (WTSong s : list.get(key)) {
+					out.write(s.toString());
+					out.newLine();
+				}
 			}
 		} catch (Throwable t) {
 			LOG.log(Level.WARNING, "Unable to save songs", t);
@@ -83,8 +104,7 @@ public class WTSong implements Comparable<WTSong>, Serializable {
 	}
 	
 	public static void load() throws IOException {
-		map.clear();
-		list.clear();
+		clear();
 		
 		BufferedReader in = new BufferedReader(new FileReader(CACHE_FILE));
 		
@@ -92,10 +112,13 @@ public class WTSong implements Comparable<WTSong>, Serializable {
 		String[] parts = null;
 		
 		while (null != (line = in.readLine())) {
-			parts = line.split("\\|", 2);
-			if (parts.length != 2) continue;
+			parts = line.split("\\|", 3);
+			if (parts.length != 3) continue;
 			
-			new WTSong(Integer.parseInt(parts[0]), parts[1]);
+			new WTSong(
+				WTGame.valueOf(parts[0]),
+				Integer.parseInt(parts[1]),
+				parts[2]);
 		}
 		
 		in.close();
@@ -104,13 +127,13 @@ public class WTSong implements Comparable<WTSong>, Serializable {
 	
 	// partial matching 
 	
-	public static List<WTSong> findByTitle(String title) {
+	public static List<WTSong> findByTitle(WTGame game, String title) {
 		title = title.toLowerCase();
 		
 		List<WTSong> songs = new ArrayList<WTSong>();
 		
 		// XXX exceedingly inefficient but it's small scale
-		for (WTSong s : list) {
+		for (WTSong s : list.get(game)) {
 			if (s.title.toLowerCase().contains(title))
 				songs.add(s);
 		}

@@ -24,14 +24,14 @@ public class Api {
 	static final Pattern ERROR_PATTERN =
 		Pattern.compile("^.*<span class=\"error\">\\s*(.*?)\\s*</(?:span|td)>.*$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 	
-	public static void submitWTScore(final WTScore score) throws Exception {
+	public static void submitWTScore(final WTGame game, final WTScore score) throws Exception {
 		Client.getAuthCookies();
 		
 		String[] staticData = {
 			"song", String.valueOf(score.getSong().scoreHeroId),
-			"game", String.valueOf(WTGame.getId(score.getPlatform())),
+			"game", String.valueOf(game.getId(score.getPlatform())),
 			"platform", String.valueOf(RbPlatform.getId(score.getPlatform())),
-			"group", String.valueOf(WTGame.scoreHeroGroupId),
+			"group", String.valueOf(game.scoreHeroGroupId),
 			"score", String.valueOf(score.getScore()),
 			"rating", score.getRating() != 0 ? String.valueOf(score.getRating()) : "",
 			"comment", score.getComment(),
@@ -50,7 +50,7 @@ public class Api {
 		data.add(score.getStreak() != 0 ? String.valueOf(score.getStreak()) : "");
 		
 		
-		new HttpForm((Object) URLs.getInsertScoreUrl(score), data) {
+		new HttpForm((Object) URLs.getInsertScoreUrl(game, score), data) {
 			public void afterSubmit(final int response, final HttpClient client, final HttpMethod method) throws Exception {
 				String body = method.getResponseBodyAsString();
 				

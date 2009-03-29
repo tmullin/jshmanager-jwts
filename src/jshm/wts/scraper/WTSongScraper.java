@@ -26,18 +26,18 @@ public class WTSongScraper {
 		"-|text~link=songid"
 	);
 	
-	public static List<WTSong> scrape(final Platform plat) throws ParserException, ScraperException {
-		return scrape(plat, Instrument.GUITAR, Difficulty.EXPERT);
+	public static List<WTSong> scrape(final WTGame game, final Platform plat) throws ParserException, ScraperException {
+		return scrape(game, plat, Instrument.GUITAR, Difficulty.EXPERT);
 	}
 	
-	public static List<WTSong> scrape(final Platform plat, final Instrument inst, final Difficulty diff)
+	public static List<WTSong> scrape(final WTGame game, final Platform plat, final Instrument inst, final Difficulty diff)
 			throws ParserException, ScraperException {
 		List<WTSong> songs = new ArrayList<WTSong>();
 		
-		SongHandler handler = new SongHandler(songs);
+		SongHandler handler = new SongHandler(game, songs);
 		
 		NodeList nodes = Scraper.scrape(
-			URLs.getTopScoresUrl(plat, inst, diff),	handler);
+			URLs.getTopScoresUrl(game, plat, inst, diff), handler);
 		
 		
 		LOG.finer("scrape() returned " + nodes.size() + " nodes");
@@ -56,11 +56,15 @@ public class WTSongScraper {
 	
 	
 	private static class SongHandler extends TieredTabularDataAdapter {
+		WTGame game;
 		List<WTSong> songs;
 		
-		public SongHandler(List<WTSong> songs) {
+		public SongHandler(WTGame game, List<WTSong> songs) {
+			this.game = game;
 			this.songs = songs;
-			this.invalidChildCountStrategy = InvalidChildCountStrategy.HANDLE;
+			
+			// ignore due to GH_M dlc not being detected
+			this.invalidChildCountStrategy = InvalidChildCountStrategy.IGNORE;
 		}
 		
 		@Override
@@ -74,7 +78,7 @@ public class WTSongScraper {
 			String title = data[1][0];
 			
 			songs.add(
-				new WTSong(id, title));
+				new WTSong(game, id, title));
 		}
 	}
 }

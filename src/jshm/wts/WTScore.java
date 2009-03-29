@@ -12,6 +12,7 @@ import jshm.util.PhpUtil;
 public class WTScore implements Serializable {
 	static final Logger LOG = Logger.getLogger(WTScore.class.getName());
 	
+	WTGame game = null;
 	Platform platform = null;
 	Instrument instrument = null;
 	Difficulty difficulty = null;
@@ -24,21 +25,22 @@ public class WTScore implements Serializable {
 	String imageUrl = "";
 	String videoUrl = "";
 
-	public WTScore() {}
+	/*public WTScore() {}*/
 	
-	public WTScore(Platform plat, Difficulty diff, WTSong song, Instrument instrument, int score) {
-		this(plat, diff, song, instrument, score, 0, 0, 0);
+	public WTScore(WTGame game, Platform plat, Difficulty diff, WTSong song, Instrument instrument, int score) {
+		this(game, plat, diff, song, instrument, score, 0, 0, 0);
 	}
 	
-	public WTScore(Platform plat, Difficulty diff, WTSong song, Instrument instrument, int score, int rating, int percent, int streak) {
-		this(plat, diff, song, instrument, score, rating, percent, streak, null);
+	public WTScore(WTGame game, Platform plat, Difficulty diff, WTSong song, Instrument instrument, int score, int rating, int percent, int streak) {
+		this(game, plat, diff, song, instrument, score, rating, percent, streak, null);
 	}
 	
-	public WTScore(Platform plat, Difficulty diff, WTSong song, Instrument instrument, int score, int rating, int percent, int streak, String comment) {
-		this(plat, diff, song, instrument, score, rating, percent, streak, comment, null, null);
+	public WTScore(WTGame game, Platform plat, Difficulty diff, WTSong song, Instrument instrument, int score, int rating, int percent, int streak, String comment) {
+		this(game, plat, diff, song, instrument, score, rating, percent, streak, comment, null, null);
 	}
 	
-	public WTScore(Platform plat, Difficulty diff, WTSong song, Instrument instrument, int score, int rating, int percent, int streak, String comment, String imageUrl, String videoUrl) {
+	public WTScore(WTGame game, Platform plat, Difficulty diff, WTSong song, Instrument instrument, int score, int rating, int percent, int streak, String comment, String imageUrl, String videoUrl) {
+		setGame(game);
 		setPlatform(plat);
 		setDifficulty(diff);
 		setSong(song);
@@ -50,6 +52,15 @@ public class WTScore implements Serializable {
 		setComment(comment);
 		setImageUrl(imageUrl);
 		setVideoUrl(videoUrl);
+	}
+	
+	public WTGame getGame() {
+		return game;
+	}
+
+	public void setGame(WTGame game) {
+		if (null == game) throw new IllegalArgumentException("game was null");
+		this.game = game;
 	}
 	
 	public Platform getPlatform() {
@@ -93,7 +104,7 @@ public class WTScore implements Serializable {
 	}
 
 	public void setScore(int score) {
-		if (score < 1) throw new IllegalArgumentException("score must be > 0, was " + score);
+		if (score < 0) throw new IllegalArgumentException("score must be >= 0, was " + score);
 		this.score = score;
 	}
 

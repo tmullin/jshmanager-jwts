@@ -44,6 +44,7 @@ import jshm.wts.gui.wizards.csvimport.CsvImportWizard;
 import jshm.wts.gui.wizards.scoreupload.ScoreUploadWizard;
 import jshm.wts.Instrument;
 import jshm.wts.JWTSubmitter;
+import jshm.wts.WTGame;
 import jshm.wts.WTScore;
 import jshm.wts.WTSong;
 import jshm.wts.gui.components.MyJXTable;
@@ -83,6 +84,7 @@ public class GUI extends javax.swing.JFrame {
         } catch (NullPointerException e) {}
 		
         try {
+        	gameCombo.setSelectedItem(WTGame.valueOf(Config.get("wts.game")));
         	platformCombo.setSelectedItem(Platform.valueOf(Config.get("wts.platform")));
         	instrumentCombo.setSelectedItem(Instrument.valueOf(Config.get("wts.instrument")));
         	diffCombo.setSelectedItem(Difficulty.valueOf(Config.get("wts.difficulty")));
@@ -92,7 +94,7 @@ public class GUI extends javax.swing.JFrame {
         
         tableModel = new WTScoreTableModel();
         table.setModel(tableModel);
-        tableModel.setParent(table);
+        tableModel.setParent(this, table);
                 
 //        Random r = new Random();
 //        for (int i = 0; i < 10; i++) {
@@ -163,6 +165,13 @@ public class GUI extends javax.swing.JFrame {
     	((WTScoreTableModel) table.getModel()).removeScores(indicies);
     }
 
+    public WTGame getCurrentGame() {
+    	return
+    	gameCombo.getSelectedIndex() == 0
+    	? null
+    	: (WTGame) gameCombo.getSelectedItem();
+    }
+    
     public Platform getCurrentPlatform() {
     	return
     	platformCombo.getSelectedIndex() == 0
@@ -186,11 +195,12 @@ public class GUI extends javax.swing.JFrame {
     
     /**
      * 
-     * @return true if the user has selected a platform, instrument, <i>and</i> difficulty, false otherwise
+     * @return true if the user has selected a game, platform, instrument, <i>and</i> difficulty, false otherwise
      */
     private boolean checkCombos() {
-    	if (null == getCurrentPlatform() || null == getCurrentInstrument() || null == getCurrentDifficulty()) {
-    		JOptionPane.showMessageDialog(this, "Please select a platform, instrument, and difficulty first.", "Error", JOptionPane.WARNING_MESSAGE);
+    	if (null == getCurrentGame() || null == getCurrentPlatform() ||
+    		null == getCurrentInstrument() || null == getCurrentDifficulty()) {
+    		JOptionPane.showMessageDialog(this, "Please select a game, platform, instrument, and difficulty first.", "Error", JOptionPane.WARNING_MESSAGE);
     		return false;
     	}
     	
@@ -198,7 +208,7 @@ public class GUI extends javax.swing.JFrame {
     }
     
     private boolean checkSongCount() {
-    	if (0 == WTSong.getList().size()) {
+    	if (0 == WTSong.getList(getCurrentGame()).size()) {
     		JOptionPane.showMessageDialog(this, "Please download the song data (from the File menu) first.", "Error", JOptionPane.WARNING_MESSAGE);
     		return false;
     	}
@@ -255,7 +265,9 @@ public class GUI extends javax.swing.JFrame {
     	LOG.finer(
     		String.format("Saving platform=%s, instrument=%s, difficulty=%s",
     		getCurrentPlatform(), getCurrentInstrument(), getCurrentDifficulty()));
-    		
+    	
+    	if (null != getCurrentGame())
+    		Config.set("wts.game", getCurrentGame());    	
     	if (null != getCurrentPlatform())
     		Config.set("wts.platform", getCurrentPlatform().name());
     	if (null != getCurrentInstrument())
@@ -282,6 +294,8 @@ public class GUI extends javax.swing.JFrame {
         instrumentCombo = new JComboBox(new Object[] {"Select Instrument", Instrument.GUITAR, Instrument.BASS, Instrument.GHWT_DRUMS, Instrument.RB_DRUMS, Instrument.VOCALS});
         diffCombo = new JComboBox(new Object[] {"Select Difficulty", Difficulty.EASY, Difficulty.MEDIUM, Difficulty.HARD, Difficulty.EXPERT});
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        gameCombo = new JComboBox(new Object[] {"Select Game", WTGame.GH_WT, WTGame.GH_M});
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         downloadSongDataMenuItem = new javax.swing.JMenuItem();
@@ -321,12 +335,24 @@ public class GUI extends javax.swing.JFrame {
 
         jLabel1.setText("Defaults:");
 
+        jLabel2.setText("Game:");
+
+        gameCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gameComboActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(gameCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(platformCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -334,11 +360,13 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(instrumentCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(diffCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(571, Short.MAX_VALUE))
+                .addContainerGap(482, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel2)
+                .addComponent(gameCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(jLabel1)
                 .addComponent(platformCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(instrumentCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -522,9 +550,10 @@ private void downloadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent 
 		@Override
 		protected Void doInBackground() throws Exception {
 			try {
-				WTSong.clear();
-				songs = WTSongScraper.scrape(getCurrentPlatform());
-				SongCellEditor.updateSongs();
+				WTSong.clear(getCurrentGame());
+				
+				songs = WTSongScraper.scrape(getCurrentGame(), getCurrentPlatform());
+				SongCellEditor.updateSongs(getCurrentGame());
 			} catch (Throwable t) {
 				thrown = t;
 			}
@@ -574,18 +603,19 @@ private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:even
 private void addScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addScoreMenuItemActionPerformed
 	if (!(checkSongCount() && checkCombos())) return;
 	
-	WTScore s = new WTScore();
-	s.setPlatform(getCurrentPlatform());
-	s.setInstrument(getCurrentInstrument());
-	s.setDifficulty(getCurrentDifficulty());
-		
-	s.setSong(table.getRowCount() > 0
-	? getScores().get(
-		table.convertRowIndexToModel(
-			table.getSelectedRow() >= 0
-			? table.getSelectedRow()
-			: table.getRowCount() - 1)).getSong()
-	: WTSong.getList().get(0));
+	WTScore s = new WTScore(
+		getCurrentGame(), getCurrentPlatform(),
+		getCurrentDifficulty(),
+		table.getRowCount() > 0
+		? getScores().get(
+			table.convertRowIndexToModel(
+				table.getSelectedRow() >= 0
+				? table.getSelectedRow()
+				: table.getRowCount() - 1)).getSong()
+		: WTSong.getList(getCurrentGame()).get(0),
+		getCurrentInstrument(),
+		0
+	);
 	
 	addScore(s);
 }//GEN-LAST:event_addScoreMenuItemActionPerformed
@@ -685,6 +715,10 @@ private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN
 		JOptionPane.INFORMATION_MESSAGE);
 }//GEN-LAST:event_aboutMenuItemActionPerformed
 
+private void gameComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameComboActionPerformed
+	SongCellEditor.updateSongs(getCurrentGame());
+}//GEN-LAST:event_gameComboActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -705,9 +739,11 @@ private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private javax.swing.JMenuItem downloadSongDataMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JComboBox gameCombo;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JComboBox instrumentCombo;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
