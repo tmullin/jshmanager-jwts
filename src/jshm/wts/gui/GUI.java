@@ -581,6 +581,11 @@ private void downloadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent 
 }//GEN-LAST:event_downloadSongDataMenuItemActionPerformed
 
 private void csvImportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_csvImportMenuItemActionPerformed
+	if (WTGame.GH_WT != getCurrentGame()) {
+		JOptionPane.showMessageDialog(this, "You can only import scores for GH_WT.\nSelect that game from the list and try again.", "Error", JOptionPane.WARNING_MESSAGE);
+		return;
+	}
+	
 	if (!(checkSongCount() && checkCombos())) return;
 	
 	Wizard wiz = CsvImportWizard
@@ -601,7 +606,7 @@ private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:even
 }//GEN-LAST:event_formWindowClosing
 
 private void addScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addScoreMenuItemActionPerformed
-	if (!(checkSongCount() && checkCombos())) return;
+	if (!(checkCombos() && checkSongCount())) return;
 	
 	WTScore s = new WTScore(
 		getCurrentGame(), getCurrentPlatform(),
