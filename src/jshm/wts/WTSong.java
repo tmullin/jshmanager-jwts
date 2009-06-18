@@ -72,6 +72,7 @@ public class WTSong implements Comparable<WTSong>, Serializable {
 		
 		clear(WTGame.GH_WT);
 		clear(WTGame.GH_M);
+		clear(WTGame.GH_SH);
 	}
 	
 	public static void clear(WTGame game) {

@@ -6,14 +6,17 @@ import java.util.*;
 import jshm.Platform;
 
 public class WTGame implements Serializable {
-	public static final WTGame GH_WT = new WTGame(7, "GH_WT");
-	public static final WTGame GH_M = new WTGame(9, "GH_M");
+	public static final WTGame
+	GH_WT = new WTGame(7, "GH_WT"),
+	GH_M = new WTGame(9, "GH_M"),
+	GH_SH = new WTGame(11, "GH_SH");
 	
 	public static WTGame valueOf(String s) {
 		s = s.toUpperCase();
 		
 		if (s.equals("GH_WT")) return GH_WT;
 		else if (s.equals("GH_M")) return GH_M;
+		else if (s.equals("GH_SH")) return GH_SH;
 		
 		throw new IllegalArgumentException("Invalid game name: " + s);
 	}
@@ -28,6 +31,11 @@ public class WTGame implements Serializable {
 		GH_M.idMap.put(Platform.XBOX360, 22);
 		GH_M.idMap.put(Platform.PS3, 23);
 		GH_M.idMap.put(Platform.WII, 24);
+		
+		GH_SH.idMap.put(Platform.PS2, 26);
+		GH_SH.idMap.put(Platform.XBOX360, 27);
+		GH_SH.idMap.put(Platform.PS3, 28);
+		GH_SH.idMap.put(Platform.WII, 29);
 	}
 	
 	public final int scoreHeroGroupId;

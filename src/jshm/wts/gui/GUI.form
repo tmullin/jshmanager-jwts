@@ -24,8 +24,8 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="uploadMenuItem">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Ctrl+U"/>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="KeyStroke.getKeyStroke(KeyEvent.VK_U, CTRL_MASK)" type="code"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="new javax.swing.ImageIcon(JSHManager.class.getResource(&quot;/jshm/resources/images/toolbar/up32.png&quot;))" type="code"/>
@@ -83,8 +83,8 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="saveMenuItem">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Ctrl+S"/>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="KeyStroke.getKeyStroke(KeyEvent.VK_S, CTRL_MASK)" type="code"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="new javax.swing.ImageIcon(JSHManager.class.getResource(&quot;/jshm/resources/images/toolbar/save32.png&quot;))" type="code"/>
@@ -296,7 +296,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gameComboActionPerformed"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JComboBox(new Object[] {&quot;Select Game&quot;, WTGame.GH_WT, WTGame.GH_M});"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JComboBox(new Object[] {&quot;Select Game&quot;, WTGame.GH_WT, WTGame.GH_M, WTGame.GH_SH});"/>
           </AuxValues>
         </Component>
       </SubComponents>

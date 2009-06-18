@@ -9,8 +9,10 @@ package jshm.wts.gui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
@@ -59,6 +61,7 @@ import jshm.wts.scraper.WTSongScraper;
  */
 public class GUI extends javax.swing.JFrame {
 	static final Logger LOG = Logger.getLogger(GUI.class.getName());
+	static final int CTRL_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 	
 	WTScoreTableModel tableModel;
 	TextFileViewerDialog textFileViewer;
@@ -295,7 +298,7 @@ public class GUI extends javax.swing.JFrame {
         diffCombo = new JComboBox(new Object[] {"Select Difficulty", Difficulty.EASY, Difficulty.MEDIUM, Difficulty.HARD, Difficulty.EXPERT});
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        gameCombo = new JComboBox(new Object[] {"Select Game", WTGame.GH_WT, WTGame.GH_M});
+        gameCombo = new JComboBox(new Object[] {"Select Game", WTGame.GH_WT, WTGame.GH_M, WTGame.GH_SH});
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         downloadSongDataMenuItem = new javax.swing.JMenuItem();
@@ -388,7 +391,7 @@ public class GUI extends javax.swing.JFrame {
         });
         fileMenu.add(downloadSongDataMenuItem);
 
-        uploadMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_MASK));
+        uploadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, CTRL_MASK));
         uploadMenuItem.setIcon(new javax.swing.ImageIcon(JSHManager.class.getResource("/jshm/resources/images/toolbar/up32.png")));
         uploadMenuItem.setMnemonic('U');
         uploadMenuItem.setText("Upload to ScoreHero...");
@@ -431,7 +434,7 @@ public class GUI extends javax.swing.JFrame {
         fileMenu.add(csvImportMenuItem);
         fileMenu.add(jSeparator3);
 
-        saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, CTRL_MASK));
         saveMenuItem.setIcon(new javax.swing.ImageIcon(JSHManager.class.getResource("/jshm/resources/images/toolbar/save32.png")));
         saveMenuItem.setText("Save Data");
         saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
