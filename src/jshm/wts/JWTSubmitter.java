@@ -29,7 +29,7 @@ public class JWTSubmitter {
 		public static final int MAJOR = 0;
 		public static final int MINOR = 0;
 		public static final int POINT = 3;
-		public static final boolean IS_BETA = true;
+		public static final boolean IS_BETA = false;
 		
 		public static final String
 		MIN_JSHM_VERSION = "0.2.4",
